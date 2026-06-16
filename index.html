@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Bird-Parasite Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal-50: #E1F5EE;
+    --teal-100: #9FE1CB;
+    --teal-600: #0F6E56;
+    --teal-800: #085041;
+    --teal-900: #04342C;
+    --gray-50: #F8F7F4;
+    --gray-100: #EEECEA;
+    --gray-200: #D3D1C7;
+    --gray-600: #5F5E5A;
+    --gray-800: #2C2C2A;
+    --amber-50: #FAEEDA;
+    --amber-600: #854F0B;
+    --amber-800: #633806;
+    --text-primary: #1a1a18;
+    --text-secondary: #5F5E5A;
+    --text-muted: #888780;
+    --border: #D3D1C7;
+    --border-light: #EEECEA;
+    --bg: #ffffff;
+    --bg-surface: #F8F7F4;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    background: var(--bg);
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 58px;
+  }
+
+  .nav-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    color: var(--teal-800);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    margin-right: auto;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    list-style: none;
+  }
+
+  .nav-tabs a {
+    display: block;
+    padding: 0 1.1rem;
+    height: 58px;
+    line-height: 58px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .nav-tabs a:hover { color: var(--text-primary); }
+  .nav-tabs a.active { color: var(--teal-600); border-bottom-color: var(--teal-600); }
+
+  /* SECTIONS */
+  section { display: none; }
+  section.active { display: block; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, var(--teal-900) 0%, #0a4a38 60%, #0d5c48 100%);
+    color: #fff;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-100);
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.65;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 0.5px solid rgba(255,255,255,0.15);
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: #fff;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; }
+
+  /* PAGE WRAPPER */
+  .page-content {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem;
+  }
+
+  /* SECTION HEADERS */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal-600);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .lead {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 620px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+
+  .card + .card { margin-top: 1rem; }
+
+  /* DOWNLOAD PAGE */
+  .download-card {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .download-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--teal-50);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .download-icon svg { width: 22px; height: 22px; stroke: var(--teal-600); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .download-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 0.25rem; }
+  .download-card p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.55; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--teal-600);
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 0.5px solid var(--border);
+  }
+  .btn-outline:hover { background: var(--bg-surface); }
+
+  .btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* CITE PAGE */
+  .cite-box {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .cite-format {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    padding: 0.3rem 0.7rem;
+    font-size: 12px;
+    font-weight: 500;
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .copy-btn:hover { background: var(--teal-50); color: var(--teal-600); border-color: var(--teal-100); }
+  .copy-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* SUBMIT FORM */
+  .method-toggle {
+    display: flex;
+    gap: 0;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    width: fit-content;
+  }
+
+  .method-btn {
+    padding: 0.55rem 1.3rem;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    border-right: 0.5px solid var(--border);
+  }
+  .method-btn:last-child { border-right: none; }
+  .method-btn.active { background: var(--teal-600); color: #fff; }
+  .method-btn:not(.active):hover { background: var(--bg-surface); color: var(--text-primary); }
+
+  .form-panel { display: none; }
+  .form-panel.active { display: block; }
+
+  /* FORM ELEMENTS */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+  }
+
+  label .req { color: #C0392B; margin-left: 2px; }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--teal-600);
+    box-shadow: 0 0 0 3px rgba(15, 110, 86, 0.1);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235F5E5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    padding-right: 2rem;
+    cursor: pointer;
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .form-hint { font-size: 12px; color: var(--text-muted); }
+
+  .form-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal-600);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border-light);
+  }
+
+  .submit-row {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .required-note { font-size: 12px; color: var(--text-muted); }
+
+  .success-banner {
+    display: none;
+    background: #E6F4F0;
+    border: 0.5px solid #9FE1CB;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    font-size: 14px;
+    color: var(--teal-800);
+    margin-top: 1.5rem;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .success-banner.show { display: flex; }
+  .success-banner svg { width: 18px; height: 18px; flex-shrink: 0; stroke: var(--teal-600); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* INFO CALLOUT */
+  .callout {
+    background: var(--amber-50);
+    border-left: 3px solid var(--amber-600);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.85rem 1.1rem;
+    font-size: 13.5px;
+    color: var(--amber-800);
+    margin-bottom: 2rem;
+    line-height: 1.55;
+  }
+
+  /* COLUMNS REFERENCE */
+  .col-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 1.5rem;
+  }
+
+  .col-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .col-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 0.5px solid var(--border-light);
+    vertical-align: top;
+  }
+
+  .col-table tr:last-child td { border-bottom: none; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .badge-char { background: var(--teal-50); color: var(--teal-600); }
+  .badge-num { background: var(--amber-50); color: var(--amber-600); }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  footer a { color: var(--teal-600); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; gap: 0; }
+    .nav-brand { font-size: 15px; }
+    .nav-tabs a { padding: 0 0.75rem; font-size: 12.5px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .hero { padding: 3rem 1.25rem 2.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    .page-content { padding: 2rem 1.25rem; }
+    .download-card { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#" onclick="showSection('home'); return false;">GBPD</a>
+  <ul class="nav-tabs">
+    <li><a href="#" onclick="showSection('home'); return false;" id="tab-home" class="active">Home</a></li>
+    <li><a href="#" onclick="showSection('download'); return false;" id="tab-download">Download</a></li>
+    <li><a href="#" onclick="showSection('cite'); return false;" id="tab-cite">How to cite</a></li>
+    <li><a href="#" onclick="showSection('submit'); return false;" id="tab-submit">Submit data</a></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="active">
+  <div class="hero">
+    <p class="hero-eyebrow">University of Georgia · Odum School of Ecology</p>
+    <h1>Global Bird-Parasite Database</h1>
+    <p>A curated, openly available repository of avian host-parasite interactions compiled from the primary scientific literature.</p>
+    <div style="display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap;">
+      <a href="#" onclick="showSection('download'); return false;" class="btn btn-primary" style="background:#fff; color:var(--teal-900);">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download database
+      </a>
+      <a href="#" onclick="showSection('submit'); return false;" class="btn btn-outline" style="border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.85);">
+        Submit a record
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">20,000+</span>
+        <span class="stat-label">Host-parasite interactions</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">7 yrs</span>
+        <span class="stat-label">In development</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">29</span>
+        <span class="stat-label">Variables per record</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <p class="section-label">About the database</p>
+    <h2>Bridging the data gap in avian disease ecology</h2>
+    <p class="lead">Wildlife diseases are far less understood than human diseases, partly due to the lack of structured data on host-parasite interactions. The GBPD addresses this gap for avian systems.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-top: 0.5rem;">
+      <div class="card">
+        <div style="width:36px;height:36px;background:var(--teal-50);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.9rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:0.3rem;">Global scope</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;">Records span all continents and major avian orders, compiled from primary literature across decades of field research.</p>
+      </div>
+
+      <div class="card">
+        <div style="width:36px;height:36px;background:var(--teal-50);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.9rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:0.3rem;">Structured records</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;">Each interaction is recorded with 29 standardised variables including taxonomy, geography, sampling method, and infection metrics.</p>
+      </div>
+
+      <div class="card">
+        <div style="width:36px;height:36px;background:var(--teal-50);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.9rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:0.3rem;">Community-driven</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;">Researchers can submit missing records or papers for inclusion. All submissions are reviewed before integration.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem;">
+      <p class="section-label">Scope</p>
+      <h2>Parasites covered</h2>
+      <p style="font-size:15px; color:var(--text-secondary); margin-bottom:1.25rem;">The GBPD includes records across all major parasite groups infecting wild birds, including but not limited to:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Haemosporidians</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Helminths</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Ectoparasites</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Bacteria</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Viruses</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Cimicids</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Protozoa</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Fungi</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Nematodes</span>
+        <span style="padding:0.4rem 0.9rem;background:var(--bg-surface);border:0.5px solid var(--border);border-radius:999px;font-size:13px;">Trematodes</span>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem; background:var(--bg-surface); border-radius:var(--radius-lg); border:0.5px solid var(--border); padding:1.75rem; display:flex; align-items:flex-start; gap:1.5rem; flex-wrap:wrap;">
+      <div style="flex:1; min-width:220px;">
+        <p class="section-label" style="margin-bottom:0.4rem;">Contact</p>
+        <h3 style="font-family:'DM Serif Display',serif; font-weight:400; font-size:1.3rem; margin-bottom:0.5rem;">Carlos Molinero</h3>
+        <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.6;">PhD Candidate, Disease Ecology<br>Odum School of Ecology<br>University of Georgia</p>
+        <p style="font-size:13px; color:var(--text-muted); margin-top:0.5rem;">Advised by Dr. Andrew Park · CEID</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.5rem; padding-top:0.25rem;">
+        <a href="mailto:" class="btn btn-outline" style="font-size:13px;">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </a>
+        <a href="https://scholar.google.com" target="_blank" class="btn btn-outline" style="font-size:13px;">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Google Scholar
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="page-content">
+    <p class="section-label">Access the data</p>
+    <h2>Download</h2>
+    <p class="lead">The GBPD is freely available for research and educational use. Please cite the Data Descriptor when using the database.</p>
+
+    <div class="callout">
+      By downloading the database you agree to cite the original Data Descriptor in any resulting publications. See the <a href="#" onclick="showSection('cite'); return false;" style="color:var(--amber-800); font-weight:500;">How to cite</a> tab for citation formats.
+    </div>
+
+    <div class="download-card">
+      <div class="download-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div>
+        <h3>GBPD — Full database</h3>
+        <p>Complete host-parasite interaction dataset with all 29 variables. Includes host taxonomy, parasite taxonomy, geographic coordinates, sampling metadata, and infection metrics.</p>
+        <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+          <a href="gbpd_v1.csv" download class="btn btn-primary">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download CSV
+          </a>
+          <a href="gbpd_v1.xlsx" download class="btn btn-outline">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download XLSX
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="download-card">
+      <div class="download-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div>
+        <h3>Data dictionary</h3>
+        <p>Variable definitions, accepted values, and coding conventions for all 29 fields in the database.</p>
+        <a href="gbpd_data_dictionary.pdf" download class="btn btn-outline">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </a>
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem;">
+      <p class="section-label" style="margin-bottom:1rem;">Database variables</p>
+      <table class="col-table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostOrder</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Taxonomic order of the avian host</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostFamily</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Family of the avian host</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostGenus</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Genus of the avian host</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostSpecies</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Species epithet of the avian host</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostFormerName</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Previous taxonomic name if the host has been reclassified</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasitePhylum</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Phylum of the parasite</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasiteClass</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Class of the parasite</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasiteOrder</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Order of the parasite</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasiteFamily</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Family of the parasite</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasiteGenus</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Genus of the parasite</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasiteSpecies</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Species epithet of the parasite</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HasBinomial</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Whether the parasite has a binomial name</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">ParasiteFormerName</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Previous name if the parasite has been reclassified</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">Citation</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Source reference for the interaction record</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">Continent</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Continent where sampling occurred</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">CountryCollected</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Country where sampling occurred</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">LocationName</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Named locality of the sampling site</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">Lat</td><td><span class="badge badge-num">Numerical</span></td><td style="color:var(--text-secondary)">Latitude of the sampling site (decimal degrees)</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">Long</td><td><span class="badge badge-num">Numerical</span></td><td style="color:var(--text-secondary)">Longitude of the sampling site (decimal degrees)</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">PopulationType</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Wild, captive, or other classification</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">SamplingBasis</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Basis of the sampling effort</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">SampleNotes</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Additional notes on the sample</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">Prevalence</td><td><span class="badge badge-num">Numerical</span></td><td style="color:var(--text-secondary)">Proportion of hosts infected (0–1)</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostsSampled</td><td><span class="badge badge-num">Numerical</span></td><td style="color:var(--text-secondary)">Total number of hosts examined</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostSex</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Sex of hosts sampled</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">HostAge</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Age class of hosts sampled</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">Intensity</td><td><span class="badge badge-num">Numerical</span></td><td style="color:var(--text-secondary)">Mean parasite intensity per infected host</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">IntensityMeasure</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Units or method used to measure intensity</td></tr>
+          <tr><td style="font-family:monospace;font-size:12.5px;">SamplingType</td><td><span class="badge badge-char">Character</span></td><td style="color:var(--text-secondary)">Method used to detect or collect parasites</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CITE -->
+<section id="cite">
+  <div class="page-content">
+    <p class="section-label">Attribution</p>
+    <h2>How to cite</h2>
+    <p class="lead">Please use the following citation when referencing the GBPD in publications, theses, or presentations.</p>
+
+    <div style="position:relative;">
+      <p class="cite-format">APA</p>
+      <div class="cite-box" id="cite-apa">
+        Molinero, C., &amp; Park, A. W. (<span id="year">2025</span>). The Global Bird-Parasite Database (GBPD): A curated repository of avian host-parasite interactions. <em>Scientific Data</em>. [FILL IN VOLUME/PAGE/DOI UPON PUBLICATION]
+        <button class="copy-btn" onclick="copyText('cite-apa', this)">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+    </div>
+
+    <div style="position:relative; margin-top:1.25rem;">
+      <p class="cite-format">BibTeX</p>
+      <div class="cite-box" id="cite-bib" style="font-family:monospace; font-size:13px; line-height:1.65; white-space:pre-wrap;">@article{molinero_gbpd_2025,
+  title   = {The Global Bird-Parasite Database ({GBPD}): A curated repository of avian host-parasite interactions},
+  author  = {Molinero, Carlos and Park, Andrew W.},
+  journal = {Scientific Data},
+  year    = {2025},
+  note    = {[FILL IN VOLUME/DOI UPON PUBLICATION]}
+}
+        <button class="copy-btn" onclick="copyText('cite-bib', this)" style="font-family:'Inter',sans-serif;">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+    </div>
+
+    <div style="position:relative; margin-top:1.25rem;">
+      <p class="cite-format">Vancouver / numbered</p>
+      <div class="cite-box" id="cite-van">
+        Molinero C, Park AW. The Global Bird-Parasite Database (GBPD): A curated repository of avian host-parasite interactions. Sci Data. 2025; [FILL IN UPON PUBLICATION].
+        <button class="copy-btn" onclick="copyText('cite-van', this)">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:2rem; margin-bottom:0;">
+      The Data Descriptor is currently under peer review at <em>Scientific Data</em>. Citation details (volume, issue, DOI) will be updated upon publication. Please check back or contact us for the most current reference.
+    </div>
+  </div>
+</section>
+
+<!-- SUBMIT -->
+<section id="submit">
+  <div class="page-content">
+    <p class="section-label">Contribute</p>
+    <h2>Submit data</h2>
+    <p class="lead">Help us grow the GBPD by submitting records we may have missed. All submissions are reviewed by the database maintainer before inclusion.</p>
+
+    <div class="method-toggle">
+      <button class="method-btn active" onclick="switchMethod('paper', this)">Submit a paper</button>
+      <button class="method-btn" onclick="switchMethod('record', this)">Enter a record directly</button>
+    </div>
+
+    <!-- PAPER METHOD -->
+    <div id="panel-paper" class="form-panel active">
+      <p style="font-size:14px; color:var(--text-secondary); margin-bottom:1.75rem; max-width:560px;">Provide the citation for a paper you believe contains records not yet in the GBPD. We will extract the relevant data and credit your contribution.</p>
+
+      <div style="display:flex; flex-direction:column; gap:1rem; max-width:600px;">
+        <div class="form-group">
+          <label for="paper-doi">DOI or URL <span class="req">*</span></label>
+          <input type="text" id="paper-doi" placeholder="e.g. 10.1111/jav.01234 or https://...">
+        </div>
+        <div class="form-group">
+          <label for="paper-citation">Full citation</label>
+          <textarea id="paper-citation" rows="3" placeholder="Author(s), Year, Title, Journal, Volume, Pages."></textarea>
+          <span class="form-hint">Include as much detail as you have.</span>
+        </div>
+        <div class="form-group">
+          <label for="paper-parasite">Parasite group(s) covered</label>
+          <input type="text" id="paper-parasite" placeholder="e.g. Cimicidae, haemosporidians, helminths">
+        </div>
+        <div class="form-group">
+          <label for="paper-notes">Notes for the maintainer</label>
+          <textarea id="paper-notes" rows="2" placeholder="Why you think this paper is missing, approximate number of records, etc."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="paper-email">Your email (optional)</label>
+          <input type="email" id="paper-email" placeholder="So we can credit you upon inclusion">
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn btn-primary" onclick="submitPaper()">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Submit paper
+        </button>
+        <span class="required-note"><span style="color:#C0392B;">*</span> Required</span>
+      </div>
+
+      <div class="success-banner" id="success-paper">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Thank you! Your submission has been sent for review. We'll be in touch if we have questions.</span>
+      </div>
+    </div>
+
+    <!-- RECORD METHOD -->
+    <div id="panel-record" class="form-panel">
+      <p style="font-size:14px; color:var(--text-secondary); margin-bottom:0.5rem; max-width:560px;">Enter the data directly using the fields below. This matches the exact structure of the GBPD and makes integration much faster. Fill in as many fields as you can — the more complete, the better.</p>
+
+      <div class="callout" style="margin:1.25rem 0 0.5rem;">
+        Use accepted taxonomic names where possible (e.g. from IOC World Bird List for hosts, Index Fungorum/Catalogue of Life for parasites).
+      </div>
+
+      <p class="form-section-title">Host taxonomy</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="r-host-order">HostOrder <span class="req">*</span></label>
+          <input type="text" id="r-host-order" placeholder="e.g. Passeriformes">
+        </div>
+        <div class="form-group">
+          <label for="r-host-family">HostFamily <span class="req">*</span></label>
+          <input type="text" id="r-host-family" placeholder="e.g. Parulidae">
+        </div>
+        <div class="form-group">
+          <label for="r-host-genus">HostGenus <span class="req">*</span></label>
+          <input type="text" id="r-host-genus" placeholder="e.g. Setophaga">
+        </div>
+        <div class="form-group">
+          <label for="r-host-species">HostSpecies <span class="req">*</span></label>
+          <input type="text" id="r-host-species" placeholder="e.g. petechia">
+        </div>
+        <div class="form-group">
+          <label for="r-host-former">HostFormerName</label>
+          <input type="text" id="r-host-former" placeholder="Previous name, if reclassified">
+        </div>
+      </div>
+
+      <p class="form-section-title">Parasite taxonomy</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="r-par-phylum">ParasitePhylum <span class="req">*</span></label>
+          <input type="text" id="r-par-phylum" placeholder="e.g. Apicomplexa">
+        </div>
+        <div class="form-group">
+          <label for="r-par-class">ParasiteClass</label>
+          <input type="text" id="r-par-class" placeholder="e.g. Aconoidasida">
+        </div>
+        <div class="form-group">
+          <label for="r-par-order">ParasiteOrder</label>
+          <input type="text" id="r-par-order" placeholder="e.g. Haemosporida">
+        </div>
+        <div class="form-group">
+          <label for="r-par-family">ParasiteFamily</label>
+          <input type="text" id="r-par-family" placeholder="e.g. Plasmodiidae">
+        </div>
+        <div class="form-group">
+          <label for="r-par-genus">ParasiteGenus <span class="req">*</span></label>
+          <input type="text" id="r-par-genus" placeholder="e.g. Plasmodium">
+        </div>
+        <div class="form-group">
+          <label for="r-par-species">ParasiteSpecies</label>
+          <input type="text" id="r-par-species" placeholder="e.g. relictum">
+        </div>
+        <div class="form-group">
+          <label for="r-has-binomial">HasBinomial</label>
+          <select id="r-has-binomial">
+            <option value="">— Select —</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="r-par-former">ParasiteFormerName</label>
+          <input type="text" id="r-par-former" placeholder="Previous name, if reclassified">
+        </div>
+      </div>
+
+      <p class="form-section-title">Source &amp; geography</p>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="r-citation">Citation <span class="req">*</span></label>
+          <input type="text" id="r-citation" placeholder="Author(s) Year Journal Volume:Pages. Or DOI.">
+        </div>
+        <div class="form-group">
+          <label for="r-continent">Continent</label>
+          <select id="r-continent">
+            <option value="">— Select —</option>
+            <option>Africa</option>
+            <option>Antarctica</option>
+            <option>Asia</option>
+            <option>Europe</option>
+            <option>North America</option>
+            <option>Oceania</option>
+            <option>South America</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="r-country">CountryCollected</label>
+          <input type="text" id="r-country" placeholder="e.g. United States">
+        </div>
+        <div class="form-group">
+          <label for="r-location">LocationName</label>
+          <input type="text" id="r-location" placeholder="e.g. Everglades National Park">
+        </div>
+        <div class="form-group">
+          <label for="r-lat">Lat</label>
+          <input type="number" id="r-lat" step="0.0001" placeholder="e.g. 25.2867" min="-90" max="90">
+        </div>
+        <div class="form-group">
+          <label for="r-long">Long</label>
+          <input type="number" id="r-long" step="0.0001" placeholder="e.g. -80.8987" min="-180" max="180">
+        </div>
+      </div>
+
+      <p class="form-section-title">Sampling details</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="r-poptype">PopulationType</label>
+          <select id="r-poptype">
+            <option value="">— Select —</option>
+            <option>Wild</option>
+            <option>Captive</option>
+            <option>Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="r-sampling-basis">SamplingBasis</label>
+          <input type="text" id="r-sampling-basis" placeholder="e.g. opportunistic, systematic">
+        </div>
+        <div class="form-group">
+          <label for="r-sampling-type">SamplingType</label>
+          <input type="text" id="r-sampling-type" placeholder="e.g. blood smear, PCR, necropsy">
+        </div>
+        <div class="form-group">
+          <label for="r-host-sex">HostSex</label>
+          <select id="r-host-sex">
+            <option value="">— Select —</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Both</option>
+            <option>Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="r-host-age">HostAge</label>
+          <select id="r-host-age">
+            <option value="">— Select —</option>
+            <option>Adult</option>
+            <option>Juvenile</option>
+            <option>Mixed</option>
+            <option>Unknown</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label for="r-sample-notes">SampleNotes</label>
+          <textarea id="r-sample-notes" rows="2" placeholder="Any relevant notes about the sample or collection method."></textarea>
+        </div>
+      </div>
+
+      <p class="form-section-title">Infection metrics</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="r-hosts-sampled">HostsSampled</label>
+          <input type="number" id="r-hosts-sampled" min="0" placeholder="e.g. 120">
+        </div>
+        <div class="form-group">
+          <label for="r-prevalence">Prevalence</label>
+          <input type="number" id="r-prevalence" step="0.001" min="0" max="1" placeholder="Proportion 0–1, e.g. 0.25">
+        </div>
+        <div class="form-group">
+          <label for="r-intensity">Intensity</label>
+          <input type="number" id="r-intensity" step="0.01" min="0" placeholder="Mean intensity">
+        </div>
+        <div class="form-group">
+          <label for="r-intensity-measure">IntensityMeasure</label>
+          <input type="text" id="r-intensity-measure" placeholder="e.g. parasites/µL, count">
+        </div>
+      </div>
+
+      <p class="form-section-title">Your details</p>
+      <div class="form-grid" style="max-width:600px;">
+        <div class="form-group">
+          <label for="r-your-email">Your email (optional)</label>
+          <input type="email" id="r-your-email" placeholder="For credit and follow-up questions">
+        </div>
+        <div class="form-group">
+          <label for="r-your-name">Your name (optional)</label>
+          <input type="text" id="r-your-name" placeholder="For acknowledgement">
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn btn-primary" onclick="submitRecord()">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Submit record
+        </button>
+        <span class="required-note"><span style="color:#C0392B;">*</span> Required fields</span>
+      </div>
+
+      <div class="success-banner" id="success-record">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Record submitted! Thank you for contributing to the GBPD. We'll review and be in touch if we need clarification.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Global Bird-Parasite Database · <a href="https://www.ecology.uga.edu" target="_blank">Odum School of Ecology, University of Georgia</a> · Built to address reviewer feedback and advance open science in avian disease ecology.</p>
+</footer>
+
+<script>
+  const YOUR_EMAIL = 'YOUR_EMAIL@uga.edu';
+
+  function showSection(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function switchMethod(method, btn) {
+    document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + method).classList.add('active');
+  }
+
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function submitPaper() {
+    const doi = val('paper-doi');
+    if (!doi) { alert('Please enter a DOI or URL for the paper.'); return; }
+    const body = [
+      'SUBMISSION TYPE: Paper for GBPD inclusion',
+      '',
+      'DOI / URL: ' + doi,
+      'Full citation: ' + val('paper-citation'),
+      'Parasite group(s): ' + val('paper-parasite'),
+      'Notes: ' + val('paper-notes'),
+      'Submitter email: ' + val('paper-email'),
+    ].join('\n');
+    window.location.href = 'mailto:' + YOUR_EMAIL
+      + '?subject=' + encodeURIComponent('[GBPD] Paper submission')
+      + '&body=' + encodeURIComponent(body);
+    document.getElementById('success-paper').classList.add('show');
+  }
+
+  function submitRecord() {
+    const required = [
+      ['r-host-order','HostOrder'], ['r-host-family','HostFamily'],
+      ['r-host-genus','HostGenus'], ['r-host-species','HostSpecies'],
+      ['r-par-phylum','ParasitePhylum'], ['r-par-genus','ParasiteGenus'],
+      ['r-citation','Citation']
+    ];
+    for (const [id, label] of required) {
+      if (!val(id)) { alert(label + ' is required.'); document.getElementById(id).focus(); return; }
+    }
+    const fields = [
+      ['HostOrder', 'r-host-order'], ['HostFamily', 'r-host-family'],
+      ['HostGenus', 'r-host-genus'], ['HostSpecies', 'r-host-species'],
+      ['HostFormerName', 'r-host-former'], ['ParasitePhylum', 'r-par-phylum'],
+      ['ParasiteClass', 'r-par-class'], ['ParasiteOrder', 'r-par-order'],
+      ['ParasiteFamily', 'r-par-family'], ['ParasiteGenus', 'r-par-genus'],
+      ['ParasiteSpecies', 'r-par-species'], ['HasBinomial', 'r-has-binomial'],
+      ['ParasiteFormerName', 'r-par-former'], ['Citation', 'r-citation'],
+      ['Continent', 'r-continent'], ['CountryCollected', 'r-country'],
+      ['LocationName', 'r-location'], ['Lat', 'r-lat'], ['Long', 'r-long'],
+      ['PopulationType', 'r-poptype'], ['SamplingBasis', 'r-sampling-basis'],
+      ['SamplingType', 'r-sampling-type'], ['HostSex', 'r-host-sex'],
+      ['HostAge', 'r-host-age'], ['SampleNotes', 'r-sample-notes'],
+      ['HostsSampled', 'r-hosts-sampled'], ['Prevalence', 'r-prevalence'],
+      ['Intensity', 'r-intensity'], ['IntensityMeasure', 'r-intensity-measure'],
+    ];
+    const lines = ['SUBMISSION TYPE: Direct record entry', ''];
+    for (const [label, id] of fields) {
+      const v = val(id);
+      if (v) lines.push(label + ': ' + v);
+    }
+    lines.push('', '--- Submitter ---');
+    lines.push('Name: ' + val('r-your-name'));
+    lines.push('Email: ' + val('r-your-email'));
+    window.location.href = 'mailto:' + YOUR_EMAIL
+      + '?subject=' + encodeURIComponent('[GBPD] Direct record submission')
+      + '&body=' + encodeURIComponent(lines.join('\n'));
+    document.getElementById('success-record').classList.add('show');
+  }
+
+  function copyText(boxId, btn) {
+    const el = document.getElementById(boxId);
+    const text = el.innerText.replace(/Copy$/, '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+      setTimeout(() => {
+        btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
